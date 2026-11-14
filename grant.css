@@ -89,47 +89,56 @@ img { display: block; width: 82%; max-width: 30em; height: auto !important; marg
 /* Match the exported abstract paragraph to the body text. */
 body > .title-block + div + div > p > font { font-size: inherit !important; }
 
-/* Reference tables: quiet rules, generous spacing, and compact sans-serif labels.
-   Scoped to data tables so exported title and figure layouts stay separate. */
+/* Soft grid tables, retaining the document's serif and typewriter fonts.
+   The headings sit above the rounded grid, as labels for each column. */
 table:has(> tbody > tr > td:nth-child(2)) {
+  --table-rule: #e5e5e5;
   table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 0.94em;
   line-height: 1.5;
   margin: 1.6em 0;
-  font-variant-numeric: tabular-nums;
-}
-table:has(> tbody > tr > td:nth-child(2)) > tbody > tr {
-  border-bottom: 1px solid rgb(0 0 0 / 12%);
 }
 table:has(> tbody > tr > td:nth-child(2)) > tbody > tr > td {
   border: 0 !important;
   vertical-align: top;
-  padding: 0.85em 0.9em 0.85em 0;
+  padding: 0.65em 0.8em;
   overflow-wrap: anywhere;
 }
-table:has(> tbody > tr > td:nth-child(2)) > tbody > tr > td:last-child {
-  padding-right: 0;
-}
-table:has(> tbody > tr > td:nth-child(2)) > tbody > tr:first-child {
-  border-bottom-color: rgb(0 0 0 / 35%);
-}
 table:has(> tbody > tr > td:nth-child(2)) > tbody > tr:first-child > td {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 0.72em;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  line-height: 1.5;
-  text-transform: uppercase;
+  font-family: inherit;
+  font-weight: 700;
   padding-top: 0;
-  padding-bottom: 0.9em;
+  padding-bottom: 0.65em;
 }
+table:has(> tbody > tr > td:nth-child(2)) > tbody > tr:not(:first-child) > td {
+  background: #fafafa;
+  border-right: 1px solid var(--table-rule) !important;
+  border-bottom: 1px solid var(--table-rule) !important;
+}
+table:has(> tbody > tr > td:nth-child(2)) > tbody > tr:not(:first-child) > td:first-child {
+  border-left: 1px solid var(--table-rule) !important;
+}
+table:has(> tbody > tr > td:nth-child(2)) > tbody > tr:nth-child(2) > td {
+  border-top: 1px solid var(--table-rule) !important;
+}
+table:has(> tbody > tr > td:nth-child(2)) > tbody > tr:nth-child(2) > td:first-child { border-top-left-radius: 10px; }
+table:has(> tbody > tr > td:nth-child(2)) > tbody > tr:nth-child(2) > td:last-child { border-top-right-radius: 10px; }
+table:has(> tbody > tr > td:nth-child(2)) > tbody > tr:last-child > td:first-child { border-bottom-left-radius: 10px; }
+table:has(> tbody > tr > td:nth-child(2)) > tbody > tr:last-child > td:last-child { border-bottom-right-radius: 10px; }
 table:has(> tbody > tr > td:nth-child(3)) > tbody > tr > td:first-child { width: 22%; }
 table:has(> tbody > tr > td:nth-child(3)) > tbody > tr > td:nth-child(2) { width: 24%; }
-table:has(> tbody > tr > td:nth-child(2)) td pre.verbatim {
+table:has(> tbody > tr > td:nth-child(2)) :is(tt, pre.verbatim) {
+  border: 1px solid var(--table-rule);
+  border-radius: 0.55em;
+  padding: 0.04em 0.28em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
   font-size: 0.92em;
   line-height: inherit;
 }
 @media (max-width: 480px) {
   table:has(> tbody > tr > td:nth-child(2)) { font-size: 0.9em; }
-  table:has(> tbody > tr > td:nth-child(2)) > tbody > tr > td { padding-right: 0.6em; }
+  table:has(> tbody > tr > td:nth-child(2)) > tbody > tr > td { padding: 0.6em 0.45em; }
 }
