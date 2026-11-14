@@ -91,3 +91,6 @@ table.title-block, table.title-block td { text-align: center !important; }
 pre.verbatim { margin-left: 0; }
 .caption, .caption p { text-align: left; }
 img { display: block; width: 82%; max-width: 30em; height: auto !important; margin: 0 auto !important; vertical-align: baseline !important; }
+
+/* Match the exported abstract paragraph to the body text. */
+body > .title-block + div + div > p > font { font-size: inherit !important; }
