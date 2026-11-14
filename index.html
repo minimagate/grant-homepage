@@ -1,0 +1,1299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:x="https://www.texmacs.org/2002/extensions" xmlns:m="http://www.w3.org/1998/Math/MathML">
+  <head>
+    <title>The Grant Programming Language</title>
+    <meta charset="utf-8" content="TeXmacs 2.1.5" name="generator"></meta>
+    <link href="grant.css" type="text/css" rel="stylesheet"></link>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" language="javascript"></script>
+  </head>
+  <body>
+    <div class="toggle" style="display: none">
+      <p>
+        
+      </p>
+      <p>
+        
+      </p>
+      <p>
+        
+      </p>
+      <p>
+        
+      </p>
+      <p>
+        
+      </p>
+    </div>
+    <table class="title-block" style="margin-bottom: 2em">
+      <tr>
+        <td><table class="title-block" style="margin-top: 0.5em; margin-bottom: 0.5em">
+          <tr>
+            <td><font style="font-size: 168.2%">THE GRANT PROGRAMMING LANGUAGE</font></td>
+          </tr>
+        </table></td>
+      </tr>
+    </table>
+    <div style="margin-top: 2em; margin-bottom: 0.5em; margin-left: 60px; margin-right: 60px">
+      <p style="margin-bottom: 0.5em">
+        <font style="font-size: 84.1%"><strong>Abstract</strong></font>
+      </p>
+    </div>
+    <div style="margin-bottom: 1em; margin-left: 60px; margin-right: 60px">
+      <p>
+        <font style="font-size: 84.1%">A <em>world</em> is a finite relational structure, a
+        state of data rather than a physical place: kinds of things, the
+        things themselves, the facts that relate them, and the rules that make
+        further facts follow. Grant is a small language in which every line
+        states something about a world: a fact, a change, a definition or a
+        question. Worlds are built on other worlds, and worlds are themselves
+        things, so that one world can hold others and reason about them. This
+        page gives the mathematical structure of Grant, explains how the
+        language works, and collects what is needed to use its
+        interpreter.</font>
+      </p>
+    </div>
+    <h2 id="auto-1">1<span style="margin-left: 1em"></span>Introduction<span style="margin-left: 1em"></span></h2>
+    <p>
+      Grant rests on one act: <em>stating</em>. A world is made of what has
+      been stated in it, and nothing else; its state is exactly its
+      statements. Here is a small world.
+    </p>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+from numbers
+ 
+kind team
+kind feeling
+kind person [
+  age:       one number
+  works_in:  one team
+  knows:     person
+  feels:     feeling
+]
+ 
+team design
+team engineering
+feeling happy
+ 
+person liz    [ age: 27 | works_in: design ]
+person laurie [ age: 30 | works_in: engineering ]
+person harbor [ age: 24 | works_in: design | knows: liz, laurie ]
+harbor feels happy
+ 
+rule mutual: person a knows person b if b knows a
+ 
+? liz.knows                      -- harbor
+? person p works_in design         -- liz, harbor
+? sum harbor.knows.age           -- 57</pre>
+    </div>
+    <p>
+      The first block declares three <em>kinds</em> and the <em>shape</em> of
+      a person: every relation a person can have, how many values it holds,
+      and of what kind. The second creates <em>objects</em> and states
+      <em>facts</em> about them. The rule <tt class="verbatim">mutual</tt> makes further
+      facts follow: nobody stated that liz knows harbor, and yet she does. The
+      last three lines are <em>questions</em>; they change nothing and show
+      what holds. Figure <a href="#fig-world">1</a> draws this world.
+    </p>
+    <div style="margin-top: 1em; margin-bottom: 1em">
+      <table style="width: 100%">
+        <tbody><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em"><img src="index-1.png" style="margin-left: -0.0124121212121212em; margin-bottom: 0em; margin-right: -0.0124121212121153em; margin-top: 0em; vertical-align: -10.1153939393939em; height: 20.2307878787879em"></img></td>
+        </tr><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em; height: 0.5em"></td>
+        </tr><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em; padding-left: 1.5em; padding-right: 1.5em"><div class="caption">
+            <font style="font-size: 84.1%"><p>
+              <class style="font-variant: small-caps">Figure 1. </class><a id="auto-2"></a><a id="fig-world"></a>The world
+              above. Dots are objects, dashed regions are kinds, arrows are
+              facts. The two dashed arrows were never stated: they follow from
+              the rule <tt class="verbatim">mutual</tt>.
+            </p></font>
+          </div></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p>
+      Six principles follow from taking the act of stating seriously.
+    </p>
+    <ol>
+      <li>
+        <p>
+          <em>Nothing exists unless it is stated.</em> A world starts empty.
+          Kinds, relations and objects come into being only when they are
+          stated, and even numbers and text must be brought in.
+        </p>
+      </li>
+      <li>
+        <p>
+          <em>If it can be built, build it.</em> The language gives only what
+          cannot be stated from inside a world. Mutual relations, averages,
+          time, ordered collections and merge strategies are built with the
+          same statements as any world.
+        </p>
+      </li>
+      <li>
+        <p>
+          <em>What isn't stated isn't true.</em> A fact holds because it was
+          stated or because a rule states that it follows; absence is falsity.
+          Grant needs no booleans and no null.
+        </p>
+      </li>
+      <li>
+        <p>
+          <em>Each world is one state.</em> A world is its parents plus its
+          own statements. Building on a world, or holding it, starts another
+          world and never changes the first.
+        </p>
+      </li>
+      <li>
+        <p>
+          <em>A name is not an identity.</em> An object is what it is because
+          of where it was stated into being. Names point at it and its index
+          numbers it, but neither is it.
+        </p>
+      </li>
+      <li>
+        <p>
+          <em>Every line is a statement.</em> Each line reads as a sentence,
+          and symbols appear only where they carry meaning: <tt class="verbatim">[ |
+          ]</tt>, <tt class="verbatim">:</tt>, <tt class="verbatim">.</tt>, <tt class="verbatim">?</tt>, <tt
+          class="verbatim">+</tt>, <tt class="verbatim">-</tt>.
+        </p>
+      </li>
+    </ol>
+    <h2 id="auto-3"><a id="structure"></a>2<span style="margin-left: 1em"></span>The mathematical structure<span
+    style="margin-left: 1em"></span></h2>
+    <h3 id="auto-4">2.1<span style="margin-left: 1em"></span>Worlds<span style="margin-left: 1em"></span></h3>
+    <p style="margin-top: 1em; margin-bottom: 1em">
+      <class style="font-variant: small-caps">Definition <class style="font-style: normal">1</class>. </class><i>A
+      <em>world</em> is a quadruple \(\mathcal{W}= (K, O, F, R)\) of finite
+      sets: the <em>kinds</em> \(K\), the <em>objects</em> \(O\), the
+      <em>facts</em> \(F\) and the <em>rules</em> \(R\).</i>
+    </p>
+    <table style="width: 100%">
+      <tbody><tr>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Part
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Holds
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Each element is
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          \(K\), kinds
+        </p></td>
+        <td style="text-align: left"><p>
+          the sorts of things that exist
+        </p></td>
+        <td style="text-align: left"><p>
+          a name with a <em>shape</em>: for each relation, how many values it
+          holds and of what kind
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          \(O\), objects
+        </p></td>
+        <td style="text-align: left"><p>
+          the things themselves
+        </p></td>
+        <td style="text-align: left"><p>
+          an identity with a kind, a handle and an index
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          \(F\), facts
+        </p></td>
+        <td style="text-align: left"><p>
+          what is stated about things
+        </p></td>
+        <td style="text-align: left"><p>
+          a triple \((s, r, v)\): subject, relation, value
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          \(R\), rules
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          what follows, and what must never hold
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          a name with a head and a condition, or a name with a forbidden
+          pattern
+        </p></td>
+      </tr></tbody>
+    </table>
+    <p>
+      The subject \(s\) of a fact is an object, and its value \(v\) is an
+      object or a primitive value, such as <tt class="verbatim">24</tt> or <tt class="verbatim">&quot;Harbor
+      Rossi&quot;</tt>. Write \(D_k\) for the objects of kind \(k\). A shape
+      entry <tt class="verbatim">r: one k</tt> on a kind \(k'\) says that \(r\) is a
+      relation from \(D_{k'}\) to \(D_k\) and that each object has exactly one
+      value of it. Shapes are <em>closed</em>: a fact whose relation is not in
+      the shape of its subject's kind cannot be stated, and neither can a
+      value of the wrong kind.
+    </p>
+    <p>
+      Facts form a set: stating the same fact twice is stating it once, and
+      the order of statements is lost. Only the structure remains.
+    </p>
+    <p style="margin-top: 1em; margin-bottom: 1em">
+      <strong>Remark <class style="font-style: normal">2</class>. </strong><em>Identity.</em> The
+      identity of an object is its <em>origin</em>: the world that created it
+      and its place in that world's order of creation. It is never written and
+      never seen. Kinds, relations and rules are identified by their names;
+      objects are identified by their origin. Two objects can share a handle,
+      but two kinds cannot share a name.
+    </p>
+    <h3 id="auto-5">2.2<span style="margin-left: 1em"></span>What follows<span style="margin-left: 1em"></span></h3>
+    <p>
+      A rule <tt class="verbatim">rule n: h if c</tt> has a head \(h\), which is one
+      fact pattern, and a condition \(c\); write it \(h \leftarrow c\). A set
+      of rules \(R\) defines an operator on sets of facts,
+    </p>
+    <center>
+      \(\displaystyle T_R (X) = X \cup \{h \sigma \hspace{0.4em} :
+      \hspace{0.4em} (h \leftarrow c)
+\in R, \hspace{0.6em} X \models c
+      \sigma\},\)
+    </center>
+    <p>
+      where \(\sigma\) ranges over the assignments of objects and values to
+      the variables of the rule. The <em>derived facts</em> \(D (F, R)\) are
+      what the rules add to \(F\), and questions see stated and derived facts
+      together:
+    </p>
+    <center>
+      \(\displaystyle M = F \cup D (F, R), \qquad M = \bigcup_{n \geqslant 0}
+      T_R^n (F) .\)
+    </center>
+    <p>
+      Derived facts are not stored. They are recomputed whenever \(F\) or
+      \(R\) changes, so a question halfway through a world sees it as it
+      stands there. Conditions join fact patterns and comparisons with <tt
+      class="verbatim">and</tt>, <tt class="verbatim">or</tt> and <tt class="verbatim">not</tt>. Recursion
+      is allowed, and the iteration above reaches its limit after finitely
+      many steps because the world is finite.
+    </p>
+    <p>
+      Negation and aggregates are not monotone, so they need care. Grant
+      orders the rules in <em>strata</em>: a rule that reads a relation under
+      <tt class="verbatim">not</tt>, or under <tt class="verbatim">count</tt>, <tt class="verbatim">sum</tt>,
+      <tt class="verbatim">min</tt> or <tt class="verbatim">max</tt>, is evaluated only after
+      every rule producing that relation has reached its fixed point. A rule
+      that would depend on its own negation, or on an aggregate of itself, has
+      no well-defined answer and is refused.
+    </p>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+rule reach:   person a can_reach person b if
+  a knows b or (a knows person m and m can_reach b)
+rule lonely:  person p is lonely if not p knows person q
+rule popular: person p is popular if count (person q knows p) &gt; 10</pre>
+    </div>
+    <h3 id="auto-6">2.3<span style="margin-left: 1em"></span>What must never hold<span style="margin-left: 1em"></span></h3>
+    <p>
+      A <em>constraint</em> <tt class="verbatim">never n: k x where c</tt> names a
+      pattern that must have no matches. The words in a shape are constraints
+      too: <tt class="verbatim">one</tt> says \(|r (x) | = 1\), <tt class="verbatim">maybe</tt>
+      says \(|r (x) | \leqslant 1\), and <tt class="verbatim">some</tt> says \(|r (x) |
+      \geqslant 1\). Constraints are checked once, on the finished structure:
+      a world is <em>valid</em> when, for every one of its constraints \(c\),
+    </p>
+    <center>
+      \(\displaystyle \{\sigma : M \models c \sigma\} = \varnothing .\)
+    </center>
+    <p>
+      Completion of the file is the checkpoint. A world may pass through
+      states that break a constraint, as long as it does not end in one. That
+      structure, and not the order of lines, is the world.
+    </p>
+    <h3 id="auto-7">2.4<span style="margin-left: 1em"></span>Building worlds on worlds<span style="margin-left: 1em"></span></h3>
+    <p>
+      A world is written as a list of lines \(\ell_1, \ldots, \ell_m\), each
+      of which is a function from worlds to worlds. A world with parents
+      \(\mathcal{W}_1, \ldots, \mathcal{W}_p\) starts from their union and
+      then runs its own lines:
+    </p>
+    <center>
+      \(\displaystyle \mathcal{W}= (\ell_m \circ \cdots \circ \ell_1)
+      (\mathcal{W}_1 \cup \cdots
+\cup \mathcal{W}_p), \qquad \mathcal{W}_i
+      \cup \mathcal{W}_j = (K_i \cup K_j,
+\hspace{0.3em} O_i \cup O_j,
+      \hspace{0.3em} F_i \cup F_j, \hspace{0.3em} R_i
+\cup R_j) .\)
+    </center>
+    <p>
+      The union is taken by identity: objects with the same origin are the
+      same object, and kinds and rules with the same name are the same kind or
+      rule. The union is commutative and associative, so the order of parents
+      does not matter. A child is not a copy of its parent plus a difference:
+      it is <em>a set of instructions applied to whatever its parent is</em>.
+      When a parent changes, every world built on it is run again.
+    </p>
+    <div style="margin-top: 1em; margin-bottom: 1em">
+      <table style="width: 100%">
+        <tbody><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em"><img src="index-2.png" style="margin-left: -0.0124121212121212em; margin-bottom: 0em; margin-right: -0.0124121212121224em; margin-top: 0em; vertical-align: -10.8483878787879em; height: 21.6967757575758em"></img></td>
+        </tr><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em; height: 0.5em"></td>
+        </tr><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em; padding-left: 1.5em; padding-right: 1.5em"><div class="caption">
+            <font style="font-size: 84.1%"><p>
+              <class style="font-variant: small-caps">Figure 2. </class><a id="auto-8"></a>Two worlds built on
+              <tt class="verbatim">roster</tt> move harbor to different teams. Their
+              union has harbor assigned to both, which the shape <tt class="verbatim">works_in:
+              one team</tt> forbids at the end. The child settles it the way
+              anything is settled in Grant: by stating what is true.
+            </p></font>
+          </div></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p>
+      A merge never fails on its own line. Parents can disagree in three ways:
+      their facts together break a constraint, a rule has two definitions, or
+      a relation is declared two ways. All three are settled by the child's
+      own lines and checked at the end of the world. Until a disputed rule is
+      restated, it produces nothing.
+    </p>
+    <h3 id="auto-9">2.5<span style="margin-left: 1em"></span>Worlds as objects<span style="margin-left: 1em"></span></h3>
+    <p>
+      Worlds are also things. Write \(H (\mathcal{W})\) for the set of worlds
+      that a world \(\mathcal{W}\) holds. Worlds that hold no other worlds
+      form the first level, and each level can hold the worlds of the levels
+      below it:
+    </p>
+    <center>
+      \(\displaystyle \mathcal{S}_0 = \{\mathcal{W}: H (\mathcal{W}) =
+      \varnothing\}, \qquad
+\mathcal{S}_{n + 1} = \{\mathcal{W}: H
+      (\mathcal{W}) \subseteq \mathcal{S}_0
+\cup \cdots \cup \mathcal{S}_n \},
+      \qquad \mathcal{S}= \bigcup_{n \geqslant 0}
+\mathcal{S}_n .\)
+    </center>
+    <p>
+      In a world of level \(n + 1\) the kind <tt class="verbatim">world</tt> is one more
+      kind of thing, whose objects are the worlds it holds, all from the
+      levels below. A relation between worlds is then an ordinary fact, and
+      rules can produce it like any other. To look inside a held world \(w\),
+      Grant evaluates there: for every condition \(\varphi\), the condition
+      <tt class="verbatim">in w:</tt> \(\varphi\) holds in \(\mathcal{W}\) exactly when
+      \(\varphi\) holds in \(w\),
+    </p>
+    <center>
+      \(\displaystyle \mathcal{W} \models (\text{in} \hspace{0.3em} w :
+      \varphi) \hspace{0.6em}
+\Longleftrightarrow \hspace{0.6em} w \models
+      \varphi .\)
+    </center>
+    <div style="margin-top: 1em; margin-bottom: 1em">
+      <table style="width: 100%">
+        <tbody><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em"><img src="index-3.png" style="margin-left: -0.0124121212121212em; margin-bottom: 0em; margin-right: -0.0124121212121224em; margin-top: 0em; vertical-align: -13.7803636363636em; height: 27.5607272727273em"></img></td>
+        </tr><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em; height: 0.5em"></td>
+        </tr><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em; padding-left: 1.5em; padding-right: 1.5em"><div class="caption">
+            <font style="font-size: 84.1%"><p>
+              <class style="font-variant: small-caps">Figure 3. </class><a id="auto-10"></a>Three levels of data.
+              Each roster records people and their team assignments. <tt
+              class="verbatim">batch_a</tt> and <tt class="verbatim">batch_b</tt> compare
+              alternative rosters; <tt class="verbatim">review</tt> compares those
+              batches. Holding a world means referring to its data, not
+              containing a physical place. A dashed line joins a reference to
+              the structure it denotes.
+            </p></font>
+          </div></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <p>
+      Because a world only holds worlds from lower levels, no world can hold
+      itself, and worlds about worlds form a well-founded tower. The
+      relationships between rosters become things to count by lifting the
+      world they live in; no other mechanism is needed to treat relationships
+      as objects. Branch a world, change something, compare: this is the basic
+      move of simulation and search, and every branch is its own world.
+    </p>
+    <h3 id="auto-11">2.6<span style="margin-left: 1em"></span>Equality<span style="margin-left: 1em"></span></h3>
+    <p style="margin-top: 1em; margin-bottom: 1em">
+      <class style="font-variant: small-caps">Definition <class style="font-style: normal">3</class>. </class><i>Two worlds
+      \(\mathcal{W}_1\) and \(\mathcal{W}_2\) are <em>equal</em> when they
+      have the same kinds, rules and constraints, and there is a bijection
+      \(\varphi : O_1 \rightarrow O_2\) that preserves kinds and facts: \((s,
+      r, v) \in F_1\) if and only if \((\varphi (s), r, \varphi (v)) \in
+      F_2\), where \(\varphi\) fixes numbers and text.</i>
+    </p>
+    <p>
+      Handles, identities and indexes do not matter: equality compares
+      <em>shape</em>. A world with anna in place of harbor, and everything
+      else the same, is equal. In the language, <tt class="verbatim">=</tt> between two
+      worlds is this equality.
+    </p>
+    <div style="margin-top: 1em; margin-bottom: 1em">
+      <table style="width: 100%">
+        <tbody><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em"><img src="index-4.png" style="margin-left: -0.0124121212121212em; margin-bottom: 0em; margin-right: -0.0124121212121224em; margin-top: 0em; vertical-align: -8.2096em; height: 16.4192em"></img></td>
+        </tr><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em; height: 0.5em"></td>
+        </tr><tr>
+          <td style="text-align: center; padding-left: 0em; padding-right: 0em; padding-left: 1.5em; padding-right: 1.5em"><div class="caption">
+            <font style="font-size: 84.1%"><p>
+              <class style="font-variant: small-caps">Figure 4. </class><a id="auto-12"></a>Equal worlds. The
+              names differ, but \(\varphi\) matches the objects so that every
+              fact corresponds.
+            </p></font>
+          </div></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <h2 id="auto-13"><a id="language"></a>3<span style="margin-left: 1em"></span>How it works<span style="margin-left: 1em"></span></h2>
+    <p>
+      This section goes through the language in the order in which a world is
+      usually written. Three habits of reading help: <em>spaces state, dots
+      refer, &lsquo;?&lsquo; shows</em>. The line <tt class="verbatim">harbor knows
+      liz</tt> adds a fact; <tt class="verbatim">harbor.knows</tt> <em>is</em> liz and
+      laurie, wherever it is written; <tt class="verbatim">? harbor.knows</tt> prints
+      them.
+    </p>
+    <h3 id="auto-14">3.1<span style="margin-left: 1em"></span>Primitive worlds<span style="margin-left: 1em"></span></h3>
+    <p>
+      Something is a primitive only if it cannot be created inside a finite
+      world. Primitives live in built-in worlds, and a world gets them only by
+      building on them: a world without <tt class="verbatim">from numbers</tt> has no
+      numbers.
+    </p>
+    <table style="width: 100%">
+      <tbody><tr>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          World
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Kind
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Holds
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+numbers</pre></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+number</pre></td>
+        <td style="text-align: left"><p>
+          exact numbers such as <tt class="verbatim">24</tt>, <tt class="verbatim">3.5</tt>, <tt
+          class="verbatim">-2</tt>, with <tt class="verbatim">+ - * / div mod</tt> and <tt class="verbatim">&lt;
+          &gt; &lt;= &gt;=</tt>
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+text</pre></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+text</pre></td>
+        <td style="text-align: left"><p>
+          written content such as <tt class="verbatim">&quot;Harbor Rossi&quot;</tt>,
+          with <tt class="verbatim">+</tt> to join and <tt class="verbatim">&lt; &gt; &lt;=
+          &gt;=</tt>
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left; border-bottom: 1px solid"><pre class="verbatim" xml:space="preserve">
+id</pre></td>
+        <td style="text-align: left; border-bottom: 1px solid"><pre class="verbatim" xml:space="preserve">
+id</pre></td>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          the index of every object: <tt class="verbatim">harbor.id</tt> is its number
+          within its kind, and <tt class="verbatim">id.1</tt> is every object numbered 1
+        </p></td>
+      </tr></tbody>
+    </table>
+    <p>
+      Numbers are exact: <tt class="verbatim">1 / 3</tt> stays a third. Time is not a
+      primitive; a date is a number of days, and a calendar is a world built
+      on <tt class="verbatim">numbers</tt>. The kind <tt class="verbatim">world</tt> is built into
+      the language. There are no booleans (truth is whether a fact exists), no
+      null (a missing value is a missing fact) and no lists (a relation can
+      hold any number of values).
+    </p>
+    <h3 id="auto-15">3.2<span style="margin-left: 1em"></span>Kinds and shapes<span style="margin-left: 1em"></span></h3>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+kind team
+kind person [ age: one number | works_in: one team | knows: person ]
+ 
+never sensible_age: person p where p.age &lt; 0 or p.age &gt; 150</pre>
+    </div>
+    <table style="width: 100%">
+      <tbody><tr>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Word
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Means
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          The same constraint written out
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+one</pre></td>
+        <td style="text-align: left"><p>
+          exactly one
+        </p></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+never n: person p where count p.r != 1</pre></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+maybe</pre></td>
+        <td style="text-align: left"><p>
+          zero or one
+        </p></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+never n: person p where count p.r &gt; 1</pre></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+some</pre></td>
+        <td style="text-align: left"><p>
+          at least one
+        </p></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+never n: person p where count p.r = 0</pre></td>
+      </tr><tr>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          <tt class="verbatim">many</tt>, or no word
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          any number
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          none
+        </p></td>
+      </tr></tbody>
+    </table>
+    <p>
+      Inside brackets a new line works like <tt class="verbatim">|</tt>. Stated and
+      derived facts share a shape: a relation that a rule produces must be
+      declared like any other.
+    </p>
+    <h3 id="auto-16">3.3<span style="margin-left: 1em"></span>Objects and facts<span style="margin-left: 1em"></span></h3>
+    <p>
+      An object is created with its kind and a handle. A fact is <tt class="verbatim">subject
+      relation value</tt>. Brackets are a compact way to state several facts,
+      so the two blocks below are the same world.
+    </p>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+person harbor [ age: 24 | works_in: design | knows: liz, laurie ]
+ 
+person harbor
+harbor age 24
+harbor works_in design
+harbor knows liz
+harbor knows laurie</pre>
+    </div>
+    <p>
+      Things must exist before they are mentioned. A bare handle works when
+      exactly one object has it; when several do, <tt class="verbatim">the</tt>
+      describes the one that is meant, and it is an error if none or several
+      fit.
+    </p>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+the harbor [ works_in: engineering ] knows liz
+the person harbor [ works_in: design ] feels happy</pre>
+    </div>
+    <h3 id="auto-17">3.4<span style="margin-left: 1em"></span>Values<span style="margin-left: 1em"></span></h3>
+    <p>
+      A dot gives every value of a relation: none, one or several. Dots chain,
+      so <tt class="verbatim">harbor.knows.works_in</tt> is the teams in which everyone
+      harbor knows works.
+    </p>
+    <table style="width: 100%">
+      <tbody><tr>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Operator
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Comes with
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Example
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">=</tt>, <tt class="verbatim">!=</tt>
+        </p></td>
+        <td style="text-align: left"><p>
+          every kind
+        </p></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+harbor.works_in = design</pre></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">+ - * /</tt>, <tt class="verbatim">( )</tt>
+        </p></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+numbers</pre></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+(harbor.age + 1) * 2</pre></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">div</tt>, <tt class="verbatim">mod</tt>
+        </p></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+numbers</pre></td>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">17 div 5</tt> is 3, <tt class="verbatim">17 mod 5</tt> is 2
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+&lt; &gt; &lt;= &gt;=</pre></td>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">numbers</tt>, <tt class="verbatim">text</tt>
+        </p></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+harbor.age &gt;= 18</pre></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
++</pre></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+text</pre></td>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+harbor.first + &quot; &quot; + harbor.last</pre></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+count</pre></td>
+        <td style="text-align: left"><p>
+          everything
+        </p></td>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">count harbor.knows</tt>, <tt class="verbatim">count (person p feels
+          happy)</tt>
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          <tt class="verbatim">sum</tt>, <tt class="verbatim">min</tt>, <tt class="verbatim">max</tt>
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid"><pre class="verbatim" xml:space="preserve">
+numbers</pre></td>
+        <td style="text-align: left; border-bottom: 1px solid"><pre class="verbatim" xml:space="preserve">
+sum harbor.knows.age / count harbor.knows</pre></td>
+      </tr></tbody>
+    </table>
+    <p>
+      <tt class="verbatim">* / div mod</tt> come before <tt class="verbatim">+ -</tt>, then
+      comparisons, then <tt class="verbatim">not</tt>, then <tt class="verbatim">and</tt>, then
+      <tt class="verbatim">or</tt>. A value alone is not a line: every line states,
+      changes, defines or shows. Missing values do not compute: <tt class="verbatim">harbor.age
+      + 1</tt> is an error if harbor has no age, while inside a condition a
+      comparison with a missing value simply does not hold. A <tt class="verbatim">-</tt>
+      written directly before a digit is a negative number, as in <tt class="verbatim">[
+      balance: -5 ]</tt>.
+    </p>
+    <h3 id="auto-18">3.5<span style="margin-left: 1em"></span>Rules<span style="margin-left: 1em"></span></h3>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+rule calm:       person p is_at peace if p feels happy
+rule adult:      person p is adult if p.age &gt;= 18
+rule neighbours: person a is_neighbour_of person b if a.works_in = b.works_in and a != b
+rule lonely:     person p is lonely if not p knows person q</pre>
+    </div>
+    <p>
+      Variables are introduced with a kind (<tt class="verbatim">person p</tt>) and
+      reused by name inside the same rule. A variable first introduced inside
+      <tt class="verbatim">not</tt> means <tt class="verbatim"></tt>there is none&rdquo;: <tt
+      class="verbatim">not p knows person q</tt> reads <tt class="verbatim"></tt>p knows
+      nobody&rdquo;. Several rules can produce the same relation, and a fact
+      holds if any of them produces it. Flags are values: create <tt class="verbatim">condition
+      adult</tt>, and then <tt class="verbatim">harbor is adult</tt> is a fact like any
+      other. A long statement continues on indented lines.
+    </p>
+    <h3 id="auto-19">3.6<span style="margin-left: 1em"></span>Questions<span style="margin-left: 1em"></span></h3>
+    <table style="width: 100%">
+      <tbody><tr>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Question
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Shows
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+? harbor.age + 1</pre></td>
+        <td style="text-align: left"><p>
+          the value: 25
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+? harbor.knows</pre></td>
+        <td style="text-align: left"><p>
+          the values: liz, laurie
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+? harbor is_at peace</pre></td>
+        <td style="text-align: left"><p>
+          yes or no
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+? person p is_at peace</pre></td>
+        <td style="text-align: left"><p>
+          every p that fits
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+? person p works_in design and not p feels happy</pre></td>
+        <td style="text-align: left"><p>
+          every p that fits
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+? person a knows person b</pre></td>
+        <td style="text-align: left"><p>
+          every pair that fits
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left; border-bottom: 1px solid"><pre class="verbatim" xml:space="preserve">
+? in roster_a: harbor feels happy</pre></td>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          yes or no, inside <tt class="verbatim">roster_a</tt>
+        </p></td>
+      </tr></tbody>
+    </table>
+    <h3 id="auto-20">3.7<span style="margin-left: 1em"></span>Changing a world<span style="margin-left: 1em"></span></h3>
+    <p>
+      A <tt class="verbatim">+</tt> at the start of a line adds and a <tt class="verbatim">-</tt>
+      removes; the <tt class="verbatim">+</tt> is optional. Sentences add, brackets set:
+      <tt class="verbatim">+ harbor works_in engineering</tt> would give harbor two team
+      assignments, while <tt class="verbatim">harbor [ works_in: engineering ]</tt>
+      replaces every value. Inside brackets, <tt class="verbatim">+</tt> and <tt class="verbatim">-</tt>
+      add and remove single values.
+    </p>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
++ harbor knows marco                  -- adds a fact
+harbor [ works_in: engineering ]             -- sets: engineering replaces design
+harbor [ knows: + marco, - liz ]      -- adds one value, removes another
+harbor [ age: harbor.age + 1 ]        -- computed once, on this line
+- harbor knows liz                    -- removes one fact
+- harbor knows                        -- removes every knows from harbor
+- harbor                              -- removes harbor and every fact touching it
+ 
+each person p [ age: p.age + 1 ]                           -- a year passes
+each person p where p.works_in = design [ age: p.age + 1 ]
+- each person p where p.age &lt; 18                           -- removes those people
+ 
+kind person [ + email: maybe text ]   -- declares a relation, or sets how many and its kind
+kind person [ - email ]               -- refused while any person has one
+- rule calm
+- never sensible_age</pre>
+    </div>
+    <p>
+      Removing only removes what was stated. If the fact still follows from a
+      rule it stays true, and Grant says so: <tt class="verbatim"></tt>removed, but it
+      still follows from rule mutual&rdquo;. Removing what is not there does
+      nothing; stating something about what is not there is an error. Rules
+      and constraints have unique names, so writing one with an existing name
+      replaces it. A kind cannot be removed while anything still uses it.
+    </p>
+    <h3 id="auto-21">3.8<span style="margin-left: 1em"></span>Building on worlds<span style="margin-left: 1em"></span></h3>
+    <p>
+      Each world is written in one file and is named by it: <tt class="verbatim">roster.grant</tt>
+      is the world <tt class="verbatim">roster</tt>. The line <tt class="verbatim">from</tt> comes
+      first and lists every parent; names resolve from the world's own folder,
+      as in <tt class="verbatim">from rosters/roster_a</tt>.
+    </p>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+-- assign_engineering.grant
+from roster
+harbor [ works_in: engineering ]
+ 
+-- both.grant
+from assign_engineering, assign_research
+harbor [ works_in: engineering ]        -- settles the two assignments of the merge
+? harbor.works_in                -- engineering</pre>
+    </div>
+    <p>
+      A child inherits everything and can change any of it, including removing
+      an inherited rule. Nothing it does reaches back into its parent. If a
+      parent removes something a child's line points at, the child fails with
+      an error that names the cause: <tt class="verbatim"></tt>harbor doesn't exist
+      (removed in roster)&rdquo;. Grant never guesses what a broken line
+      meant. Running a world shows its own questions only.
+    </p>
+    <h3 id="auto-22">3.9<span style="margin-left: 1em"></span>Holding worlds<span style="margin-left: 1em"></span></h3>
+    <p>
+      A world relates to another world in one of two ways: it builds on it
+      (<tt class="verbatim">from roster_a</tt>), or it holds it (<tt class="verbatim">world
+      roster_a</tt>). Holding makes an object of kind <tt class="verbatim">world</tt>,
+      the way <tt class="verbatim">team design</tt> makes a team. A held world cannot be
+      changed from outside.
+    </p>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+from numbers
+ 
+world roster_a
+world roster_b
+ 
+kind world [ + is_happier_than: world ]
+ 
+rule happier: world a is_happier_than world b if
+  count (in a: person p feels happy) &gt; count (in b: person p feels happy)
+ 
+? roster_a is_happier_than roster_b
+? in roster_a: harbor.knows
+? roster_a = roster_b
+? (in roster_a: harbor feels happy) and not (in roster_b: harbor feels happy)</pre>
+    </div>
+    <p>
+      Inside <tt class="verbatim">in w:</tt> the names are those of \(w\). Objects keep
+      their identity in every world built from the one that created them, so
+      the last question asks what changed for the same harbor.
+    </p>
+    <h2 id="auto-23"><a id="reference"></a>4<span style="margin-left: 1em"></span>Reference<span style="margin-left: 1em"></span></h2>
+    <h3 id="auto-24">4.1<span style="margin-left: 1em"></span>What each line does<span style="margin-left: 1em"></span></h3>
+    <p>
+      Every statement changes \(K\), \(O\), \(F\) or \(R\) of its world, and
+      derived facts follow after each line.
+    </p>
+    <table style="width: 100%">
+      <tbody><tr>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Statement
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Changes
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Effect
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+from a, b</pre></td>
+        <td style="text-align: left"><p>
+          \(K, O, F, R\)
+        </p></td>
+        <td style="text-align: left"><p>
+          starts the world as the union of its parents
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+kind person [ r: one k ]</pre></td>
+        <td style="text-align: left"><p>
+          \(K\)
+        </p></td>
+        <td style="text-align: left"><p>
+          adds the kind and declares its relations
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+kind person [ + r: k | - s ]</pre></td>
+        <td style="text-align: left"><p>
+          \(K\)
+        </p></td>
+        <td style="text-align: left"><p>
+          declares or redeclares a relation; removes one, unless facts use it
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+- kind person</pre></td>
+        <td style="text-align: left"><p>
+          \(K\)
+        </p></td>
+        <td style="text-align: left"><p>
+          removes the kind, unless anything uses it
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+person harbor [ r: v ]</pre></td>
+        <td style="text-align: left"><p>
+          \(O, F\)
+        </p></td>
+        <td style="text-align: left"><p>
+          a new object with its origin, kind, handle and index; one fact per
+          value
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+harbor r v</pre></td>
+        <td style="text-align: left"><p>
+          \(F\)
+        </p></td>
+        <td style="text-align: left"><p>
+          adds the fact \((h, r, v)\), where \(h\) is harbor
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+harbor [ r: v ]</pre></td>
+        <td style="text-align: left"><p>
+          \(F\)
+        </p></td>
+        <td style="text-align: left"><p>
+          removes every stated \((h, r, \cdot)\), then adds \((h, r, v)\)
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+harbor [ r: + v, - w ]</pre></td>
+        <td style="text-align: left"><p>
+          \(F\)
+        </p></td>
+        <td style="text-align: left"><p>
+          adds \(v\), removes \(w\)
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+each person p where c [ r: v ]</pre></td>
+        <td style="text-align: left"><p>
+          \(F\)
+        </p></td>
+        <td style="text-align: left"><p>
+          the same change on every match
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">- harbor r v</tt>, <tt class="verbatim">- harbor r</tt>
+        </p></td>
+        <td style="text-align: left"><p>
+          \(F\)
+        </p></td>
+        <td style="text-align: left"><p>
+          removes the stated fact, or every stated value of \(r\)
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">- harbor</tt>, <tt class="verbatim">- each person p where c</tt>
+        </p></td>
+        <td style="text-align: left"><p>
+          \(O, F\)
+        </p></td>
+        <td style="text-align: left"><p>
+          removes the objects and every fact with them as subject or value
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">rule n: h if c</tt>, <tt class="verbatim">never n: k x where c</tt>
+        </p></td>
+        <td style="text-align: left"><p>
+          \(R\)
+        </p></td>
+        <td style="text-align: left"><p>
+          adds, or replaces the one named \(n\)
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">- rule n</tt>, <tt class="verbatim">- never n</tt>
+        </p></td>
+        <td style="text-align: left"><p>
+          \(R\)
+        </p></td>
+        <td style="text-align: left"><p>
+          removes it
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+world roster_a</pre></td>
+        <td style="text-align: left"><p>
+          \(O\)
+        </p></td>
+        <td style="text-align: left"><p>
+          an object of kind <tt class="verbatim">world</tt> holding the world <tt class="verbatim">roster_a</tt>
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left; border-bottom: 1px solid"><pre class="verbatim" xml:space="preserve">
+? q</pre></td>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          nothing
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          evaluates against \(M = F \cup D\) and shows the result
+        </p></td>
+      </tr></tbody>
+    </table>
+    <h3 id="auto-25">4.2<span style="margin-left: 1em"></span>Grammar<span style="margin-left: 1em"></span></h3>
+    <p>
+      An informal summary. Lowercase words are names; what a name means (kind,
+      handle, relation, variable, world) comes from where it stands and what
+      has been declared. There is one statement per line; an indented line
+      continues the statement above it; <tt class="verbatim">&ndash;</tt> starts a
+      comment.
+    </p>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+world      = [ &quot;from&quot; world_name { &quot;,&quot; world_name } ] { statement }
+ 
+statement  = kind_decl | kind_edit | &quot;-&quot; &quot;kind&quot; kind
+           | object | fact | set | removal | each
+           | rule | never | &quot;-&quot; &quot;rule&quot; name | &quot;-&quot; &quot;never&quot; name
+           | &quot;world&quot; world_name
+           | &quot;?&quot; ( condition | expr )
+ 
+kind_decl  = &quot;kind&quot; kind [ &quot;[&quot; field { sep field } &quot;]&quot; ]
+kind_edit  = &quot;kind&quot; kind &quot;[&quot; edit { sep edit } &quot;]&quot;
+edit       = &quot;+&quot; field | &quot;-&quot; relation
+field      = relation &quot;:&quot; [ &quot;one&quot; | &quot;maybe&quot; | &quot;some&quot; | &quot;many&quot; ] kind
+ 
+object     = kind handle [ values ]
+fact       = [ &quot;+&quot; ] ref relation expr
+set        = ref values
+removal    = &quot;-&quot; ref [ relation [ expr ] ]
+each       = [ &quot;-&quot; ] &quot;each&quot; kind var [ &quot;where&quot; condition ] [ values | relation ]
+values     = &quot;[&quot; assign { sep assign } &quot;]&quot;
+assign     = relation &quot;:&quot; ( expr { &quot;,&quot; expr } | change { &quot;,&quot; change } )
+change     = ( &quot;+&quot; | &quot;-&quot; ) expr
+ 
+rule       = &quot;rule&quot; name &quot;:&quot; kind var relation term &quot;if&quot; condition
+never      = &quot;never&quot; name &quot;:&quot; kind var &quot;where&quot; condition
+ 
+ref        = handle | &quot;the&quot; [ kind ] handle values
+condition  = item { ( &quot;and&quot; | &quot;or&quot; ) item }
+item       = &quot;not&quot; item | &quot;(&quot; condition &quot;)&quot; | &quot;in&quot; world_name &quot;:&quot; condition
+           | kind var
+           | term relation term
+           | expr ( &quot;=&quot; | &quot;!=&quot; | &quot;&lt;&quot; | &quot;&gt;&quot; | &quot;&lt;=&quot; | &quot;&gt;=&quot; ) expr
+term       = kind var | var | ref | expr
+expr       = number | text | ref | var | &quot;id&quot; &quot;.&quot; number
+           | expr &quot;.&quot; relation
+           | expr ( &quot;+&quot; | &quot;-&quot; | &quot;*&quot; | &quot;/&quot; | &quot;div&quot; | &quot;mod&quot; ) expr
+           | &quot;count&quot; ( expr | &quot;(&quot; condition &quot;)&quot; ) | ( &quot;sum&quot; | &quot;min&quot; | &quot;max&quot; ) expr
+           | &quot;in&quot; world_name &quot;:&quot; expr | &quot;(&quot; expr &quot;)&quot;
+sep        = &quot;|&quot; | newline</pre>
+    </div>
+    <h3 id="auto-26">4.3<span style="margin-left: 1em"></span>Errors<span style="margin-left: 1em"></span></h3>
+    <p>
+      Grant stops at the first line that cannot be stated, and names the
+      cause.
+    </p>
+    <table style="width: 100%">
+      <tbody><tr>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          When
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Grant says
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a world name does not resolve
+        </p></td>
+        <td style="text-align: left"><p>
+          no world called <tt class="verbatim">roster_x</tt> here
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a parent has errors
+        </p></td>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">roster</tt> has errors; fix it first
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a name is used before it is created
+        </p></td>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">design</tt> doesn't exist yet
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a name points at something a parent removed
+        </p></td>
+        <td style="text-align: left"><p>
+          harbor doesn't exist (removed in roster)
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a bare handle fits several objects
+        </p></td>
+        <td style="text-align: left"><p>
+          2 objects called harbor; use <tt class="verbatim">the</tt>
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">the</tt> fits none or several
+        </p></td>
+        <td style="text-align: left"><p>
+          no people match this description
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a relation is not in the kind's shape
+        </p></td>
+        <td style="text-align: left"><p>
+          person has no relation <tt class="verbatim">favourite_colour</tt>
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a value is the wrong kind
+        </p></td>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">works_in</tt> takes a team, not a feeling
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a rule produces an undeclared relation
+        </p></td>
+        <td style="text-align: left"><p>
+          person doesn't declare <tt class="verbatim">is_at</tt>
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a rule variable shares an object's name
+        </p></td>
+        <td style="text-align: left"><p>
+          <tt class="verbatim">harbor</tt> is already an object
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a rule depends on its own negation or aggregate
+        </p></td>
+        <td style="text-align: left"><p>
+          rule <tt class="verbatim">popular</tt> counts itself
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a line is only a value
+        </p></td>
+        <td style="text-align: left"><p>
+          this value isn't used
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a missing value is computed with
+        </p></td>
+        <td style="text-align: left"><p>
+          harbor has no <tt class="verbatim">age</tt>
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a constraint is broken at the end of the world
+        </p></td>
+        <td style="text-align: left"><p>
+          harbor has 2 <tt class="verbatim">works_in</tt> (person: <tt class="verbatim">works_in:
+          one team</tt>)
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a merge disagreement is left at the end
+        </p></td>
+        <td style="text-align: left"><p>
+          rule <tt class="verbatim">calm</tt> differs between assign_engineering and
+          assign_research; restate it
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a kind is removed while still in use
+        </p></td>
+        <td style="text-align: left"><p>
+          3 people still use <tt class="verbatim">person</tt>
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a held world is changed
+        </p></td>
+        <td style="text-align: left"><p>
+          roster_a is held, not built on; write a world <tt class="verbatim">from
+          roster_a</tt>
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          a world builds on or holds itself
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          roster_a &rarr; batch_a &rarr; roster_a
+        </p></td>
+      </tr></tbody>
+    </table>
+    <h2 id="auto-27"><a id="interpreter"></a>5<span style="margin-left: 1em"></span>The interpreter<span style="margin-left: 1em"></span></h2>
+    <p>
+      Grant is implemented in Rust, with no dependencies. From the folder of
+      its source, <tt class="verbatim">cargo install &ndash;path .</tt> builds it and
+      installs the command <tt class="verbatim">grant</tt>.
+    </p>
+    <table style="width: 100%">
+      <tbody><tr>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Command
+        </p></td>
+        <td style="text-align: left; border-bottom: 1px solid; border-top: 1px solid"><p>
+          Does
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+grant roster</pre></td>
+        <td style="text-align: left"><p>
+          runs the world <tt class="verbatim">roster.grant</tt> and shows its questions
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+grant check roster move</pre></td>
+        <td style="text-align: left"><p>
+          runs worlds quietly and reports only errors
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+grant show roster</pre></td>
+        <td style="text-align: left"><p>
+          prints everything stated in a world, parents included
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
+grant watch roster</pre></td>
+        <td style="text-align: left"><p>
+          runs the world again whenever it, or anything it builds on, changes
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left; border-bottom: 1px solid"><pre class="verbatim" xml:space="preserve">
+grant repl roster</pre></td>
+        <td style="text-align: left; border-bottom: 1px solid"><p>
+          states lines one at a time, on a world or from nothing
+        </p></td>
+      </tr></tbody>
+    </table>
+    <p>
+      Each question is shown with its answer beneath it.
+    </p>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+$ grant harbor
+? harbor is_at peace
+  yes
+? liz.knows
+  harbor
+? person p is_neighbour_of harbor
+  liz</pre>
+    </div>
+    <p>
+      An error names the world, the line and the cause. When a parent fails,
+      the child reports it together with the parent's own error.
+    </p>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+error in child (child.grant, line 1): &lsquo;roster&lsquo; has errors; fix it first
+    1 | from roster
+error in roster (roster.grant, line 11): &lsquo;venice&lsquo; doesn't exist yet
+   11 | harbor works_in venice</pre>
+    </div>
+    <p>
+      <tt class="verbatim">grant watch</tt> is how edits flow forward while writing: a
+      child is a set of instructions, and it is run again on whatever its
+      parents are now. In the REPL every line is a statement, as in a file;
+      <tt class="verbatim">:check</tt> runs the end-of-world checks, <tt class="verbatim">:show</tt>
+      prints what has been stated, and <tt class="verbatim">:save name</tt> writes the
+      lines to <tt class="verbatim">name.grant</tt>.
+    </p>
+    <h3 id="auto-28">5.1<span style="margin-left: 1em"></span>Beyond the foundation<span style="margin-left: 1em"></span></h3>
+    <p>
+      Foundation 1 fixes the primitives. What comes next is written in Grant
+      itself: standard worlds for time and calendars, for ordered collections,
+      and for common constraints. They are ordinary worlds, built only from
+      the primitives.
+    </p>
+  </body>
+</html>

@@ -1,0 +1,93 @@
+/* The look of the Grant page: the TeXmacs generic style, carried to the web. */
+
+@font-face { font-family: "CMU Serif"; font-weight: 400; font-style: normal; font-display: swap;
+  src: url("fonts/cmu-serif-500-roman.woff2") format("woff2"); }
+@font-face { font-family: "CMU Serif"; font-weight: 400; font-style: italic; font-display: swap;
+  src: url("fonts/cmu-serif-500-italic.woff2") format("woff2"); }
+@font-face { font-family: "CMU Serif"; font-weight: 700; font-style: normal; font-display: swap;
+  src: url("fonts/cmu-serif-700-roman.woff2") format("woff2"); }
+@font-face { font-family: "CMU Typewriter Text"; font-weight: 400; font-style: normal; font-display: swap;
+  src: url("fonts/cmu-typewriter-text-500-roman.woff2") format("woff2"); }
+
+html { background: #fff; color: #000; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: "CMU Serif", "Latin Modern Roman", "Computer Modern", Georgia, serif;
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 38em;
+  margin: 0 auto;
+  padding: 3.75em 1.5em 5em;
+  text-align: left;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+/* Headings: the weight of the text, set apart by size and space. */
+h1, h2, h3, h4, strong { font-weight: 400; }
+h2 { font-size: 1.42em; margin: 2.4em 0 0.7em; text-align: left; }
+h3 { font-size: 1.17em; margin: 1.9em 0 0.6em; text-align: left; }
+strong { font-variant: small-caps; letter-spacing: 0.02em; }
+p { margin: 0.75em 0; }
+a { color: inherit; text-decoration-color: #000; text-underline-offset: 0.15em; }
+
+/* Title: centred. */
+table.title-block { width: 100% !important; text-align: center; hyphens: none; -webkit-hyphens: none; }
+table.title-block td { text-align: center !important; padding: 0; }
+body > .title-block { margin-bottom: 2.5em !important; }
+.title-block .title-block:first-child font { font-size: 1.5em !important; letter-spacing: 0.055em; }
+.title-block p, .title-block center { margin: 0; }
+
+/* Code keeps its spaces. */
+tt, pre, .verbatim { font-family: "CMU Typewriter Text", "Latin Modern Mono", Menlo, monospace; }
+tt, .verbatim { font-size: 0.95em; hyphens: none; -webkit-hyphens: none; }
+pre.verbatim {
+  font-size: 0.84em;
+  line-height: 1.42;
+  text-align: left;
+  margin: 1.1em 0 1.1em 1.6em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* Tables: three rules, as in print. */
+table { border-collapse: collapse; }
+td { padding: 0.28em 0.9em 0.28em 0; vertical-align: baseline; text-align: left; hyphens: none; -webkit-hyphens: none; }
+td p { margin: 0; }
+td tt, td .verbatim { font-size: 0.88em; }
+td pre.verbatim { display: inline; margin: 0; white-space: pre-wrap; }
+@media (min-width: 760px) { td:first-child:not(:only-child), td:first-child:not(:only-child) pre.verbatim { white-space: nowrap; } }
+
+/* Figures. */
+img { max-width: 100%; object-fit: contain; }
+.caption, .caption p { font-size: 0.92em; text-align: center; hyphens: none; -webkit-hyphens: none; }
+
+mjx-container { font-size: 1em !important; }
+mjx-container[display="true"] { margin: 0.9em 0 !important; overflow-x: auto; overflow-y: hidden; }
+
+@media (max-width: 640px) {
+  body { font-size: 15px; padding: 2.5em 1.1em 4em; text-align: left; }
+  pre.verbatim { margin-left: 0; font-size: 0.74em; }
+  td { padding-right: 0.6em; }
+}
+
+@media print {
+  body { font-size: 11pt; max-width: none; padding: 0; }
+}
+
+/* One continuous column, including the exported title and reference entries. */
+html, body { background: #fff; color: #000; color-scheme: light; }
+body { columns: auto; }
+body > div { margin-left: 0 !important; margin-right: 0 !important; }
+table, tbody, tr, td { display: block; width: auto !important; }
+table { width: 100% !important; }
+td { border: 0 !important; padding: 0.2em 0 !important; white-space: normal !important; }
+td pre.verbatim { white-space: pre-wrap !important; }
+tr + tr { margin-top: 0.85em; }
+tr:has(> td:nth-child(2)) { padding: 0.65em 0; border-bottom: 1px solid #000; }
+tr:has(> td:nth-child(2)) > td:first-child { font-weight: 700; }
+table.title-block, table.title-block td { text-align: center !important; }
+.title-block table { margin-top: 0 !important; }
+pre.verbatim { margin-left: 0; }
+.caption, .caption p { text-align: left; }
+img { display: block; width: 82%; max-width: 30em; height: auto !important; margin: 0 auto !important; vertical-align: baseline !important; }
