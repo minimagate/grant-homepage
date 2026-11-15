@@ -464,10 +464,10 @@ rule popular: person p is popular if count (person q knows p) &gt; 10</pre>
     <p>
       This section goes through the language in the order in which a world is
       usually written. Three habits of reading help: <em>spaces state, dots
-      refer, <tt class="verbatim">?</tt> shows</em>. The line <tt class="verbatim">harbor knows
-      liz</tt> adds a fact; <tt class="verbatim">harbor.knows</tt> <em>is</em> liz and
-      laurie, wherever it is written; <tt class="verbatim">? harbor.knows</tt> prints
-      them.
+      refer, <tt class="verbatim">@</tt> picks, <tt class="verbatim">?</tt> shows</em>. The line
+      <tt class="verbatim">harbor knows liz</tt> adds a fact; <tt class="verbatim">harbor.knows</tt>
+      <em>is</em> liz and laurie, wherever it is written; <tt class="verbatim">?
+      harbor.knows</tt> prints them.
     </p>
     <h3 id="auto-14">3.1<span style="margin-left: 1em"></span>Primitive worlds<span style="margin-left: 1em"></span></h3>
     <p>
@@ -603,8 +603,33 @@ harbor knows liz
 harbor knows laurie</pre>
     </div>
     <p>
-      Things must exist before they are mentioned. A bare handle works when
-      exactly one object has it; when several do, <tt class="verbatim">the</tt>
+      Things must exist before they are mentioned. Names are written in small
+      letters, with <tt class="verbatim">_</tt> between words; capitals belong inside
+      text.
+    </p>
+    <p>
+      What things share is a thing, not a text. A name is an object, so one
+      person has one name and a name can have many people. A fact is stated
+      from one end, and a rule gives the other:
+    </p>
+    <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
+      <pre class="verbatim" xml:space="preserve">
+kind person
+kind name [ person: person ]
+kind person [ + name: one name ]
+name emmy
+person noether [ name: name@emmy ]
+rule bearer: name n person person p if p name n
+ 
+? name@emmy.person              -- noether</pre>
+    </div>
+    <p>
+      A bare handle works when exactly one object has it. When objects of
+      different kinds share it, the kind comes first and <tt class="verbatim">@</tt>
+      picks the object: <tt class="verbatim">@</tt> goes from a kind to one of its
+      objects, <tt class="verbatim">.</tt> from an object along a relation. <tt class="verbatim">person@york</tt>
+      is exactly <tt class="verbatim">the person york [ ]</tt>, and Grant shows a shared
+      handle the same way. When objects of one kind share a handle, <tt class="verbatim">the</tt>
       describes the one that is meant, and it is an error if none or several
       fit.
     </p>
@@ -1058,7 +1083,7 @@ change     = ( &quot;+&quot; | &quot;-&quot; ) expr
 rule       = &quot;rule&quot; name &quot;:&quot; kind var relation term &quot;if&quot; condition
 never      = &quot;never&quot; name &quot;:&quot; kind var &quot;where&quot; condition
  
-ref        = handle | &quot;the&quot; [ kind ] handle values
+ref        = handle | kind &quot;@&quot; handle | &quot;the&quot; [ kind ] handle values
 condition  = item { ( &quot;and&quot; | &quot;or&quot; ) item }
 item       = &quot;not&quot; item | &quot;(&quot; condition &quot;)&quot; | &quot;in&quot; world_name &quot;:&quot; condition
            | kind var
@@ -1115,7 +1140,14 @@ sep        = &quot;|&quot; | newline</pre>
         </p></td>
       </tr><tr>
         <td style="text-align: left"><p>
-          a bare handle fits several objects
+          a bare handle fits objects of several kinds
+        </p></td>
+        <td style="text-align: left"><p>
+          2 objects called york; write <tt class="verbatim">city@york</tt> or <tt class="verbatim">person@york</tt>
+        </p></td>
+      </tr><tr>
+        <td style="text-align: left"><p>
+          a bare handle fits several objects of one kind
         </p></td>
         <td style="text-align: left"><p>
           2 objects called harbor; use <tt class="verbatim">the</tt>
@@ -1283,8 +1315,8 @@ $ grant harbor
       <pre class="verbatim" xml:space="preserve">
 error in child (child.grant, line 1): `roster` has errors; fix it first
     1 | from roster
-error in roster (roster.grant, line 11): `venice` doesn't exist yet
-   11 | harbor works_in venice</pre>
+error in roster (roster.grant, line 11): `durham` doesn't exist yet
+   11 | harbor works_in durham</pre>
     </div>
     <p>
       <tt class="verbatim">grant watch</tt> is how edits flow forward while writing: a

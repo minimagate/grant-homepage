@@ -239,7 +239,7 @@
 
   <section|How it works><label|language>
 
-  This section goes through the language in the order in which a world is usually written. Three habits of reading help: <em|spaces state, dots refer, <verbatim|?> shows>. The line <verbatim|harbor knows liz> adds a fact; <verbatim|harbor.knows> <em|is> liz and laurie, wherever it is written; <verbatim|? harbor.knows> prints them.
+  This section goes through the language in the order in which a world is usually written. Three habits of reading help: <em|spaces state, dots refer, <verbatim|@> picks, <verbatim|?> shows>. The line <verbatim|harbor knows liz> adds a fact; <verbatim|harbor.knows> <em|is> liz and laurie, wherever it is written; <verbatim|? harbor.knows> prints them.
 
   <subsection|Primitive worlds>
 
@@ -339,7 +339,29 @@
     harbor knows laurie
   </verbatim-code>
 
-  Things must exist before they are mentioned. A bare handle works when exactly one object has it; when several do, <verbatim|the> describes the one that is meant, and it is an error if none or several fit.
+  Things must exist before they are mentioned. Names are written in small letters, with <verbatim|_> between words; capitals belong inside text.
+
+  What things share is a thing, not a text. A name is an object, so one person has one name and a name can have many people. A fact is stated from one end, and a rule gives the other:
+
+  <\verbatim-code>
+    kind person
+
+    kind name [ person: person ]
+
+    kind person [ + name: one name ]
+
+    name emmy
+
+    person noether [ name: name@emmy ]
+
+    rule bearer: name n person person p if p name n
+
+    \ 
+
+    ? name@emmy.person \ \ \ \ \ \ \ \ \ \ \ \ \ -- noether
+  </verbatim-code>
+
+  A bare handle works when exactly one object has it. When objects of different kinds share it, the kind comes first and <verbatim|@> picks the object: <verbatim|@> goes from a kind to one of its objects, <verbatim|.> from an object along a relation. <verbatim|person@york> is exactly <verbatim|the person york [ ]>, and Grant shows a shared handle the same way. When objects of one kind share a handle, <verbatim|the> describes the one that is meant, and it is an error if none or several fit.
 
   <\verbatim-code>
     the harbor [ works_in: engineering ] knows liz
@@ -712,7 +734,7 @@
 
     \ 
 
-    ref \ \ \ \ \ \ \ = handle \| "the" [ kind ] handle values
+    ref \ \ \ \ \ \ \ = handle \| kind "@" handle \| "the" [ kind ] handle values
 
     condition \ = item { ( "and" \| "or" ) item }
 
@@ -764,7 +786,11 @@
     </cell>|<\cell>
       harbor doesn't exist (removed in roster)
     </cell>>|<row|<\cell>
-      a bare handle fits several objects
+      a bare handle fits objects of several kinds
+    </cell>|<\cell>
+      2 objects called york; write <verbatim|city@york> or <verbatim|person@york>
+    </cell>>|<row|<\cell>
+      a bare handle fits several objects of one kind
     </cell>|<\cell>
       2 objects called harbor; use <verbatim|the>
     </cell>>|<row|<\cell>
@@ -876,9 +902,9 @@
 
     \ \ \ \ 1 \| from roster
 
-    error in roster (roster.grant, line 11): \<#60\>venice\<#60\> doesn't exist yet
+    error in roster (roster.grant, line 11): \<#60\>durham\<#60\> doesn't exist yet
 
-    \ \ \ 11 \| harbor works_in venice
+    \ \ \ 11 \| harbor works_in durham
   </verbatim-code>
 
   <verbatim|grant watch> is how edits flow forward while writing: a child is a set of instructions, and it is run again on whatever its parents are now. In the REPL every line is a statement, as in a file; <verbatim|:check> runs the end-of-world checks, <verbatim|:show> prints what has been stated, and <verbatim|:save name> writes the lines to <verbatim|name.grant>.
