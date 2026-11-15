@@ -341,27 +341,27 @@
 
   Things must exist before they are mentioned. Names are written in small letters, with <verbatim|_> between words; capitals belong inside text.
 
-  What things share is a thing, not a text. A name is an object, so one person has one name and a name can have many people. A fact is stated from one end, and a rule gives the other:
+  What things share is a thing, not a text. A name is an object, so one person has one name and a name can have many people. A fact is stated from one end and read from both: <verbatim|by> declares a relation that reads another one backwards. It is never stated, so nothing is stored twice, and the relation it reads cannot be removed or given another kind while it is read.
 
   <\verbatim-code>
-    kind person
+    kind name
 
-    kind name [ person: person ]
+    kind person [ name: one name ]
 
-    kind person [ + name: one name ]
+    kind name [ person: person by name ]
 
     name emmy
 
-    person noether [ name: name@emmy ]
-
-    rule bearer: name n person person p if p name n
+    person noether [ name: emmy ]
 
     \ 
 
     ? name@emmy.person \ \ \ \ \ \ \ \ \ \ \ \ \ -- noether
   </verbatim-code>
 
-  A bare handle works when exactly one object has it. When objects of different kinds share it, the kind comes first and <verbatim|@> picks the object: <verbatim|@> goes from a kind to one of its objects, <verbatim|.> from an object along a relation. <verbatim|person@york> is exactly <verbatim|the person york [ ]>, and Grant shows a shared handle the same way. When objects of one kind share a handle, <verbatim|the> describes the one that is meant, and it is an error if none or several fit.
+  Numbers and text hold no facts of their own, but they are read from the same way: after <verbatim|kind number [ aged: person by age ]>, <verbatim|24.aged> is everyone aged 24.
+
+  A bare handle works when exactly one object has it, or when the place settles which: a value takes the kind of its relation, also in a description after <verbatim|the>; a handle compared with a value takes that value's kind, as in <verbatim|p.lives_in = york>; and a subject is the object that has the relations its line uses. Otherwise, when objects of different kinds share it, the kind comes first and <verbatim|@> picks the object: <verbatim|@> goes from a kind to one of its objects, <verbatim|.> from an object along a relation. <verbatim|person@york> is exactly <verbatim|the person york [ ]>, and Grant shows a shared handle the same way. When objects of one kind share a handle, <verbatim|the> describes the one that is meant, and it is an error if none or several fit.
 
   <\verbatim-code>
     the harbor [ works_in: engineering ] knows liz
@@ -408,7 +408,7 @@
     </cell>|<\cell>
       <verbatim|text>
     </cell>|<\cell>
-      <verbatim|linear_algebra.title + " II">
+      <verbatim|"linear " + "algebra">
     </cell>>|<row|<\cell>
       <verbatim|count>
     </cell>|<\cell>
@@ -598,7 +598,13 @@
     </cell>|<\cell>
       <math|K>
     </cell>|<\cell>
-      adds the kind and declares its relations
+      adds the kind and declares its relations; stated again, adds the relations it lacks
+    </cell>>|<row|<\cell>
+      <verbatim|kind city [ r: k by s ]>
+    </cell>|<\cell>
+      <math|K>
+    </cell>|<\cell>
+      declares <math|r> as the relation <math|s> of kind <math|k>, read from the other end; nothing is stored for it
     </cell>>|<row|<\cell>
       <verbatim|kind person [ + r: k \| - s ]>
     </cell>|<\cell>
@@ -706,7 +712,7 @@
 
     edit \ \ \ \ \ \ = "+" field \| "-" relation
 
-    field \ \ \ \ \ = relation ":" [ "one" \| "maybe" \| "some" \| "many" ] kind
+    field \ \ \ \ \ = relation ":" [ "one" \| "maybe" \| "some" \| "many" ] kind [ "by" relation ]
 
     \ 
 
@@ -786,9 +792,13 @@
     </cell>|<\cell>
       harbor doesn't exist (removed in roster)
     </cell>>|<row|<\cell>
-      a bare handle fits objects of several kinds
+      a bare handle fits objects of several kinds, and the place doesn't settle which
     </cell>|<\cell>
       2 objects called york; write <verbatim|city@york> or <verbatim|person@york>
+    </cell>>|<row|<\cell>
+      a <verbatim|by> relation is stated
+    </cell>|<\cell>
+      <verbatim|home_of> is read from <verbatim|lives_in>; state <verbatim|lives_in> on the other end
     </cell>>|<row|<\cell>
       a bare handle fits several objects of one kind
     </cell>|<\cell>
