@@ -142,3 +142,6 @@ table:has(> tbody > tr > td:nth-child(2)) :is(tt, pre.verbatim) {
   table:has(> tbody > tr > td:nth-child(2)) { font-size: 0.9em; }
   table:has(> tbody > tr > td:nth-child(2)) > tbody > tr > td { padding: 0.6em 0.45em; }
 }
+
+/* The mark, above the title. */
+img[src="grant-mark.svg"] { display: block; width: 5.2em !important; height: auto !important; margin: 0 auto 1.4em !important; vertical-align: baseline !important; }

@@ -5,6 +5,7 @@
     <title>The Grant Programming Language</title>
     <meta charset="utf-8" content="TeXmacs 2.1.5" name="generator"></meta>
     <link href="grant.css" type="text/css" rel="stylesheet"></link>
+    <link href="favicon.svg" rel="icon"></link>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" language="javascript"></script>
   </head>
   <body>
@@ -25,6 +26,11 @@
         
       </p>
     </div>
+    <center>
+      <p>
+        <img class="image" src="grant-mark.svg" width="96"></img>
+      </p>
+    </center>
     <table class="title-block" style="margin-bottom: 2em">
       <tr>
         <td><table class="title-block" style="margin-top: 0.5em; margin-bottom: 0.5em">
@@ -458,7 +464,7 @@ rule popular: person p is popular if count (person q knows p) &gt; 10</pre>
     <p>
       This section goes through the language in the order in which a world is
       usually written. Three habits of reading help: <em>spaces state, dots
-      refer, &lsquo;?&lsquo; shows</em>. The line <tt class="verbatim">harbor knows
+      refer, <tt class="verbatim">?</tt> shows</em>. The line <tt class="verbatim">harbor knows
       liz</tt> adds a fact; <tt class="verbatim">harbor.knows</tt> <em>is</em> liz and
       laurie, wherever it is written; <tt class="verbatim">? harbor.knows</tt> prints
       them.
@@ -1022,8 +1028,8 @@ world roster_a</pre></td>
       An informal summary. Lowercase words are names; what a name means (kind,
       handle, relation, variable, world) comes from where it stands and what
       has been declared. There is one statement per line; an indented line
-      continues the statement above it; <tt class="verbatim">&ndash;</tt> starts a
-      comment.
+      continues the statement above it; <tt class="verbatim">-<span style="margin-left: 0em"></span>-</tt>
+      starts a comment.
     </p>
     <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
       <pre class="verbatim" xml:space="preserve">
@@ -1213,8 +1219,8 @@ sep        = &quot;|&quot; | newline</pre>
     <h2 id="auto-27"><a id="interpreter"></a>5<span style="margin-left: 1em"></span>The interpreter<span style="margin-left: 1em"></span></h2>
     <p>
       Grant is implemented in Rust, with no dependencies. From the folder of
-      its source, <tt class="verbatim">cargo install &ndash;path .</tt> builds it and
-      installs the command <tt class="verbatim">grant</tt>.
+      its source, <tt class="verbatim">cargo install -<span style="margin-left: 0em"></span>-path .</tt>
+      builds it and installs the command <tt class="verbatim">grant</tt>.
     </p>
     <table style="width: 100%">
       <tbody><tr>
@@ -1275,9 +1281,9 @@ $ grant harbor
     </p>
     <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
       <pre class="verbatim" xml:space="preserve">
-error in child (child.grant, line 1): &lsquo;roster&lsquo; has errors; fix it first
+error in child (child.grant, line 1): `roster` has errors; fix it first
     1 | from roster
-error in roster (roster.grant, line 11): &lsquo;venice&lsquo; doesn't exist yet
+error in roster (roster.grant, line 11): `venice` doesn't exist yet
    11 | harbor works_in venice</pre>
     </div>
     <p>

@@ -15,6 +15,10 @@
     <assign|figure-name|<macro|name|<with|font-shape|small-caps|<arg|name>>>>
   </hide-preamble>
 
+  <\center>
+    <image|grant-mark.svg|2.4cm|||>
+  </center>
+
   <doc-data|<doc-title|THE GRANT PROGRAMMING LANGUAGE>>
 
   <\abstract>
@@ -235,7 +239,7 @@
 
   <section|How it works><label|language>
 
-  This section goes through the language in the order in which a world is usually written. Three habits of reading help: <em|spaces state, dots refer, `?` shows>. The line <verbatim|harbor knows liz> adds a fact; <verbatim|harbor.knows> <em|is> liz and laurie, wherever it is written; <verbatim|? harbor.knows> prints them.
+  This section goes through the language in the order in which a world is usually written. Three habits of reading help: <em|spaces state, dots refer, <verbatim|?> shows>. The line <verbatim|harbor knows liz> adds a fact; <verbatim|harbor.knows> <em|is> liz and laurie, wherever it is written; <verbatim|? harbor.knows> prints them.
 
   <subsection|Primitive worlds>
 
@@ -655,7 +659,7 @@
 
   <subsection|Grammar>
 
-  An informal summary. Lowercase words are names; what a name means (kind, handle, relation, variable, world) comes from where it stands and what has been declared. There is one statement per line; an indented line continues the statement above it; <verbatim|--> starts a comment.
+  An informal summary. Lowercase words are names; what a name means (kind, handle, relation, variable, world) comes from where it stands and what has been declared. There is one statement per line; an indented line continues the statement above it; <verbatim|-<space|0spc>-> starts a comment.
 
   <\verbatim-code>
     world \ \ \ \ \ = [ "from" world_name { "," world_name } ] { statement }
@@ -819,7 +823,7 @@
 
   <section|The interpreter><label|interpreter>
 
-  Grant is implemented in Rust, with no dependencies. From the folder of its source, <verbatim|cargo install --path .> builds it and installs the command <verbatim|grant>.
+  Grant is implemented in Rust, with no dependencies. From the folder of its source, <verbatim|cargo install -<space|0spc>-path .> builds it and installs the command <verbatim|grant>.
 
   <tabular|<tformat|<twith|table-width|1par>|<twith|table-hmode|min>|<cwith|1|1|1|-1|cell-bborder|1ln>|<cwith|1|1|1|-1|cell-tborder|1ln>|<cwith|-1|-1|1|-1|cell-bborder|1ln>|<cwith|1|-1|1|-1|cell-hyphen|t>|<cwith|1|-1|1|-1|cell-halign|l>|<table|<row|<\cell>
       Command
@@ -868,11 +872,11 @@
   An error names the world, the line and the cause. When a parent fails, the child reports it together with the parent's own error.
 
   <\verbatim-code>
-    error in child (child.grant, line 1): `roster` has errors; fix it first
+    error in child (child.grant, line 1): \<#60\>roster\<#60\> has errors; fix it first
 
     \ \ \ \ 1 \| from roster
 
-    error in roster (roster.grant, line 11): `venice` doesn't exist yet
+    error in roster (roster.grant, line 11): \<#60\>venice\<#60\> doesn't exist yet
 
     \ \ \ 11 \| harbor works_in venice
   </verbatim-code>
@@ -887,6 +891,7 @@
 <\initial>
   <\collection>
     <associate|html-css|grant.css>
+    <associate|html-head-favicon|favicon.svg>
     <associate|html-title|The Grant Programming Language>
     <associate|page-medium|paper>
   </collection>
