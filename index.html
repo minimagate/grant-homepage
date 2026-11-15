@@ -236,7 +236,7 @@ rule mutual: person a knows person b if b knows a
     <p>
       The subject \(s\) of a fact is an object, and its value \(v\) is an
       object or a primitive value, such as <tt class="verbatim">24</tt> or <tt class="verbatim">&quot;Harbor
-      Rossi&quot;</tt>. Write \(D_k\) for the objects of kind \(k\). A shape
+      Reed&quot;</tt>. Write \(D_k\) for the objects of kind \(k\). A shape
       entry <tt class="verbatim">r: one k</tt> on a kind \(k'\) says that \(r\) is a
       relation from \(D_{k'}\) to \(D_k\) and that each object has exactly one
       value of it. Shapes are <em>closed</em>: a fact whose relation is not in
@@ -439,7 +439,7 @@ rule popular: person p is popular if count (person q knows p) &gt; 10</pre>
     </p>
     <p>
       Handles, identities and indexes do not matter: equality compares
-      <em>shape</em>. A world with anna in place of harbor, and everything
+      <em>shape</em>. A world with june in place of harbor, and everything
       else the same, is equal. In the language, <tt class="verbatim">=</tt> between two
       worlds is this equality.
     </p>
@@ -503,7 +503,7 @@ text</pre></td>
         <td style="text-align: left"><pre class="verbatim" xml:space="preserve">
 text</pre></td>
         <td style="text-align: left"><p>
-          written content such as <tt class="verbatim">&quot;Harbor Rossi&quot;</tt>,
+          written content such as <tt class="verbatim">&quot;Harbor Reed&quot;</tt>,
           with <tt class="verbatim">+</tt> to join and <tt class="verbatim">&lt; &gt; &lt;=
           &gt;=</tt>
         </p></td>
@@ -783,9 +783,9 @@ rule lonely:     person p is lonely if not p knows person q</pre>
     </p>
     <div class="compact-block" style="margin-top: 1em; margin-bottom: 1em; margin-left: 35.145870328812px; text-indent: 0em">
       <pre class="verbatim" xml:space="preserve">
-+ harbor knows marco                  -- adds a fact
++ harbor knows robin                  -- adds a fact
 harbor [ works_in: engineering ]             -- sets: engineering replaces design
-harbor [ knows: + marco, - liz ]      -- adds one value, removes another
+harbor [ knows: + robin, - liz ]      -- adds one value, removes another
 harbor [ age: harbor.age + 1 ]        -- computed once, on this line
 - harbor knows liz                    -- removes one fact
 - harbor knows                        -- removes every knows from harbor
