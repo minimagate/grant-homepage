@@ -143,7 +143,7 @@
       a name with a head and a condition, or a name with a forbidden pattern
     </cell>>>>>
 
-  The subject <math|s> of a fact is an object, and its value <math|v> is an object or a primitive value, such as <verbatim|24> or <verbatim|"Harbor Reed">. Write <math|D<rsub|k>> for the objects of kind <math|k>. A shape entry <verbatim|r: one k> on a kind <math|k<rprime|'>> says that <math|r> is a relation from <math|D<rsub|k<rprime|'>>> to <math|D<rsub|k>> and that each object has exactly one value of it. Shapes are <em|closed>: a fact whose relation is not in the shape of its subject's kind cannot be stated, and neither can a value of the wrong kind.
+  The subject <math|s> of a fact is an object, and its value <math|v> is an object or a primitive value, such as <verbatim|24> or <verbatim|"Linear Algebra">. Write <math|D<rsub|k>> for the objects of kind <math|k>. A shape entry <verbatim|r: one k> on a kind <math|k<rprime|'>> says that <math|r> is a relation from <math|D<rsub|k<rprime|'>>> to <math|D<rsub|k>> and that each object has exactly one value of it. Shapes are <em|closed>: a fact whose relation is not in the shape of its subject's kind cannot be stated, and neither can a value of the wrong kind.
 
   Facts form a set: stating the same fact twice is stating it once, and the order of statements is lost. Only the structure remains.
 
@@ -262,7 +262,7 @@
     </cell>|<\cell>
       <verbatim|text>
     </cell>|<\cell>
-      written content such as <verbatim|"Harbor Reed">, with <verbatim|+> to join and <verbatim|\<less\> \<gtr\> \<less\>= \<gtr\>=>
+      written content such as <verbatim|"Linear Algebra">, with <verbatim|+> to join and <verbatim|\<less\> \<gtr\> \<less\>= \<gtr\>=>
     </cell>>|<row|<\cell>
       <verbatim|id>
     </cell>|<\cell>
@@ -386,7 +386,7 @@
     </cell>|<\cell>
       <verbatim|text>
     </cell>|<\cell>
-      <verbatim|harbor.first + " " + harbor.last>
+      <verbatim|linear_algebra.title + " II">
     </cell>>|<row|<\cell>
       <verbatim|count>
     </cell>|<\cell>
